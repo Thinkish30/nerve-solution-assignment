@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive UI Assignment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .slider {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .slider div {
+            flex: 1;
+            text-align: center;
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            background: #f9f9f9;
+            font-weight: bold;
+        }
+
+        .slider div:hover {
+            background-color: #e7e7e7;
+        }
+
+        .slider .active {
+            background-color: #007BFF;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #fefefe;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h4 {
+            margin: 0 0 5px;
+            font-size: 18px;
+            color: #007BFF;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .slider div {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            select {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slider Toggle -->
+        <div class="slider">
+            <div class="active" data-view="Bullish">Bullish</div>
+            <div data-view="Bearish">Bearish</div>
+            <div data-view="RangeBound">RangeBound</div>
+            <div data-view="Volatile">Volatile</div>
+        </div>
+
+        <!-- Date Dropdown -->
+        <select id="dateDropdown">
+            <!-- Options will be populated dynamically -->
+        </select>
+
+        <!-- Strategy Cards / Empty State -->
+        <div id="contentArea">
+            <!-- Content will be rendered dynamically -->
+        </div>
+    </div>
+
+    <script>
+        const dateArray = ['24-Apr-2024', '02-May-2024', '09-May-2024', '31-May-2024', '21-Jun-2024'];
+        const strategyArray = [
+            {
+                View: 'Bullish',
+                Value: {
+                    '24-Apr-2024': ['Bull Call Spread', 'Bull Put Spread', 'Bull Put Spread', 'Long Call', 'Bull Put Spread', 'Bull Call Spread', 'Strategy1', 'Bull Call Spread', 'Strategy1', 'Strategy1', 'SpreadStrategy', 'Bull Call Spread'],
+                    '02-May-2024': ['Bull Call Spread', 'Bull Call Spread', 'Bull Put Spread', 'Long Call', 'Long Call', 'Long Call', 'Bull Put Spread', 'Bull Call Spread', 'Strategy1', 'Bull Call Spread', 'Strategy2', 'Strategy1', 'Strategy2', 'Bull Call Spread'],
+                    '09-May-2024': ['Strategy Put', 'Strategy Call', 'Strategy Call', 'Strategy Call', 'Strategy Put']
+                }
+            },
+            {
+                View: 'Bearish',
+                Value: {
+                    '24-Apr-2024': ['Bear Call Spread', 'Bear Call Spread', 'Bear Call Spread', 'Long Put', 'Long Put', 'Long Put', 'Bear Call Spread'],
+                    '31-May-2024': ['Long Put', 'Long Put', 'Long Put', 'Long Put', 'Long Put'],
+                    '21-Jun-2024': ['Strategy3', 'Strategy3', 'Bear Put Spread', 'Strategy3', 'Long Put', 'Long Put']
+                }
+            },
+            {
+                View: 'RangeBound',
+                Value: {
+                    '24-Apr-2024': ['Short Straddle', 'Short Strangle', 'Short Strangle', 'Iron Butterfly', 'Short Strangle', 'Short Straddle', 'Strategy1', 'Short Straddle', 'Strategy1', 'Strategy1', 'SpreadStrategy', 'Short Straddle'],
+                    '02-May-2024': ['Short Straddle', 'Short Straddle', 'Short Strangle', 'Iron Butterfly', 'Iron Butterfly', 'Iron Butterfly', 'Short Strangle', 'Short Straddle', 'Strategy1', 'Short Straddle', 'Strategy2', 'Strategy1', 'Strategy2', 'Short Straddle'],
+                    '21-Jun-2024': ['Iron Condor', 'Iron Butterfly', 'Iron Butterfly', 'Iron Butterfly', 'Iron Condor']
+                }
+            },
+            {
+                View: 'Volatile',
+                Value: {
+                    '02-May-2024': ['Long Straddle', 'Long Strangle', 'Long Strangle', 'Long Strangle', 'Long Straddle', 'Strategy1', 'Long Straddle', 'Strategy1', 'Strategy1', 'Spread-Strategy', 'Long Straddle'],
+                    '09-May-2024': ['Long Straddle', 'Long Straddle', 'Long Strangle', 'Long Strangle', 'Long Straddle', 'Strategy1', 'Long Straddle', 'Strategy2', 'Strategy1', 'Strategy2', 'Long Straddle'],
+                    '31-May-2024': ['Long Straddle', 'Long Strangle', 'Long Strangle', 'Long Strangle', 'Long Straddle']
+                }
+            }
+        ];
+
+        const slider = document.querySelector('.slider');
+        const dateDropdown = document.getElementById('dateDropdown');
+        const contentArea = document.getElementById('contentArea');
+
+        // Populate dropdown
+        dateArray.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            dateDropdown.appendChild(option);
+        });
+
+        const renderContent = () => {
+            const selectedView = document.querySelector('.slider .active').dataset.view;
+            const selectedDate = dateDropdown.value;
+
+            const strategies = strategyArray.find(item => item.View === selectedView)?.Value[selectedDate] || [];
+
+            contentArea.innerHTML = '';
+
+            if (strategies.length > 0) {
+                const strategyCounts = strategies.reduce((acc, strategy) => {
+                    acc[strategy] = (acc[strategy] || 0) + 1;
+                    return acc;
+                }, {});
+
+                Object.entries(strategyCounts).forEach(([strategy, count]) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `<h4>${strategy}</h4><p>${count} ${count > 1 ? 'Strategies' : 'Strategy'}</p>`;
+                    contentArea.appendChild(card);
+                });
+            } else {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.textContent = `There are no strategies for ${selectedDate}`;
+                contentArea.appendChild(emptyState);
+            }
+        };
+
+        // Event Listeners
+        slider.addEventListener('click', e => {
+            if (e.target.dataset.view) {
+                document.querySelectorAll('.slider div').forEach(div => div.classList.remove('active'));
+                e.target.classList.add('active');
+                renderContent();
+            }
+        });
+
+        dateDropdown.addEventListener('change', renderContent);
+
+        // Initial Render
+        renderContent();
+    </script>
+</body>
+</html>
